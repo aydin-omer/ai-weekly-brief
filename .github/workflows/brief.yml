@@ -1,0 +1,28 @@
+name: AI Weekly Brief
+
+on:
+  schedule:
+    # Every Monday at 05:30 UTC = 08:30 Turkey time
+    - cron: '30 5 * * 1'
+  workflow_dispatch:
+
+jobs:
+  send-brief:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run brief script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: python brief.py
